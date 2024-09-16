@@ -11,9 +11,9 @@ class ProductController {
 
       const products = await response.json();
 
-      res.send(products);
+      res.status(200).send(products);
     } catch (error) {
-      res.send(error);
+      res.status(500).send(error.message);
     }
   }
 
@@ -32,11 +32,11 @@ class ProductController {
 
       const productFound = products.find((product) => product.id === +id);
 
-      if (!productFound) throw new Error('Product not found');
+      if (!productFound) throw { message: 'Product not found' }
 
-      res.send(productFound);
+      res.status(200).send(productFound);
     } catch (error) {
-      res.send(error);
+      res.status(500).send(error.message);
     }
   }
 }
