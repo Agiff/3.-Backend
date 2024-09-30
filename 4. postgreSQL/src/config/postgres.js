@@ -1,9 +1,7 @@
-import 'dotenv/config';
-
 import pg from 'pg';
 const { Pool } = pg;
 
-const pool = new Pool({
+export const pool = new Pool({
   host: 'localhost',
   port: '5432',
   user: 'postgres',
@@ -13,10 +11,3 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 })
-
-const fetchBooks = async () => {
-  const result = await pool.query('SELECT * FROM "Books" WHERE "BookID" = 6');
-  console.log(result.rows[0])
-}
-
-fetchBooks();
