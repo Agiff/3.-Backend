@@ -9,4 +9,7 @@ router.get('/', (req, res) => {
 router.get('/books', bookController.getBooks);
 router.get('/books/:id', bookController.findBook);
 
+router.post('/books', bookController.addBook);
+router.delete('/books/:id', bookController.removeBook);
+
 export default router;
