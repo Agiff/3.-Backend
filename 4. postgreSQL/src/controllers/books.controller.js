@@ -81,6 +81,61 @@ class BookController {
       res.status(500).send('Internal Server Error');
     }
   }
+
+  updateBook = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, genre, published_date, price, author_id } = req.body;
+
+      const response = await pool.query(`SELECT * FROM "Books" WHERE "book_id" = ${id}`);
+      const bookFound = response.rows[0];
+      
+      if (!bookFound) throw new Error('Book not found');
+
+      let updateQuery = `UPDATE "Books" SET `;
+
+      if (title) updateQuery += `title = '${title}',`;
+      if (genre) updateQuery += `genre = '${genre}',`;
+      if (published_date) updateQuery += `published_date = '${published_date}',`;
+      if (price) updateQuery += `price = '${price}',`;
+      if (author_id) updateQuery += `author_id = '${author_id}',`;
+      
+      if (updateQuery.at(-1) === ',') updateQuery = updateQuery.substring(0, updateQuery.length - 1);
+      
+      updateQuery += `WHERE book_id = ${id}`
+
+      await pool.query(updateQuery);
+      
+      res.status(200).send({
+        message: 'Book updated',
+        book: req.body
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+
+  updateBookPrice = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { price } = req.body;
+
+      const response = await pool.query(`SELECT * FROM "Books" WHERE "book_id" = ${id}`);
+      const bookFound = response.rows[0];
+      
+      if (!bookFound) throw new Error('Book not found');
+
+      await pool.query(`UPDATE "Books" SET price = ${price} WHERE book_id = ${id}`);
+      
+      res.status(200).send({
+        message: 'Book updated'
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Internal Server Error');
+    }
+  }
 }
 
 export const bookController = new BookController();
