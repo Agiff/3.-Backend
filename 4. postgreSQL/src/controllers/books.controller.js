@@ -3,7 +3,13 @@ import { pool } from "../config/postgres.js";
 class BookController {
   getBooks = async (req, res) => {
     try {
-      const books = await pool.query('SELECT * FROM "Books"');
+      const books = await pool.query(`
+        SELECT * 
+        FROM "Books" AS b 
+        JOIN "Authors" AS a ON b.author_id = a.author_id
+      `);
+      console.log(books);
+      
       res.send(books.rows);
     } catch (error) {
       res.status(500).send('Internal Server Error');
@@ -18,7 +24,12 @@ class BookController {
       // const book = await pool.query(`SELECT * FROM "Books" WHERE "book_id" = ${id}`);
 
       // Ver 2
-      const bookFound = await pool.query('SELECT * FROM "Books" WHERE "book_id" = $1', [id]);
+      const bookFound = await pool.query(`
+        SELECT * FROM "Books"
+        JOIN "Authors"
+        ON "Books".author_id = "Authors".author_id
+        WHERE "book_id" = $1`
+      , [id]);
       console.log(bookFound);
       
       if (bookFound.rows.length === 0) throw new Error('Book not found');
