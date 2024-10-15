@@ -1,6 +1,6 @@
 import { pool } from "../config/postgres.js";
 
-class BookController {
+class ProductController {
   addProduct = async (req, res) => {
     try {
       const { product_name, price } = req.body;
@@ -69,4 +69,4 @@ class BookController {
   }
 }
 
-export const bookController = new BookController();
+export const productController = new ProductController();
