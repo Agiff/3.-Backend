@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class UserController {
-  addUser = async (req, res) => {
+  addUser = async (req, res, next) => {
     try {
       const { username, email, password } = req.body;
 
@@ -23,7 +23,7 @@ class UserController {
     }
   }
 
-  getUsers = async (req, res) => {
+  getUsers = async (req, res, next) => {
     try {
       const users = await prisma.user.findMany();
       res.status(200).send(users);
@@ -33,7 +33,7 @@ class UserController {
     }
   }
 
-  findUser = async (req, res) => {
+  findUser = async (req, res, next) => {
     try {
       const { id } = req.params;
       const user = await prisma.user.findFirstOrThrow({
@@ -47,7 +47,7 @@ class UserController {
     }
   }
 
-  getUserPosts = async (req, res) => {
+  getUserPosts = async (req, res, next) => {
     try {
       const { id } = req.params;
       const userFound = await prisma.user.findUnique({

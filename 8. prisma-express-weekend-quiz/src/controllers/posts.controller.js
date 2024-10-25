@@ -2,11 +2,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class PostController {
-  addPost = async (req, res) => {
+  addPost = async (req, res, next) => {
     try {
       const { title, content, user_id } = req.body;
-
-      if (!title || !content || !user_id) throw new Error('Bad Request');
 
       const newPost = await prisma.post.create({
         data: {
@@ -18,25 +16,23 @@ class PostController {
       
       res.status(201).send(newPost);
     } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: 'Internal Server Error' });
+      next(error);
     }
   }
 
-  getPosts = async (req, res) => {
+  getPosts = async (req, res, next) => {
     try {
       const posts = await prisma.post.findMany();
       res.status(200).send(posts);
     } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: 'Internal Server Error' });
+      next(error);
     }
   }
 
-  findPost = async (req, res) => {
+  findPost = async (req, res, next) => {
     try {
       const { id } = req.params;
-      const post = await prisma.post.findFirstOrThrow({
+      const post = await prisma.post.findUniqueOrThrow({
         where: { id: Number(id) },
         include: {
           author: true,
@@ -50,12 +46,11 @@ class PostController {
 
       res.status(200).send(post);
     } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: 'Internal Server Error' });
+      next(error);
     }
   }
 
-  updatePost = async (req, res) => {
+  updatePost = async (req, res, next) => {
     try {
       const { id } = req.params;
       const { title, content, user_id } = req.body;
@@ -64,7 +59,10 @@ class PostController {
         where: { id: Number(id) },
       });
 
-      if (!postFound) throw new Error('Post not found');
+      // Cannot handle this on errorHandler due to its name to be a constant of "Error"
+      // if (!postFound) throw new Error('Post not found'); // err.name = Erroro, err.message = 'Post not found'
+      
+      if (!postFound) throw { name: 'JavascriptDeveloperClassError', message: 'Aku macan' } // err.name = Erroro, err.message = 'Post not found'
 
       const updatedPost = await prisma.post.update({
         where: { id: Number(id) },
@@ -77,15 +75,14 @@ class PostController {
 
       res.status(200).send(updatedPost);
     } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: 'Internal Server Error' });
+      next(error);
     }
   }
 
-  deletePost = async (req, res) => {
+  deletePost = async (req, res, next) => {
     try {
       const { id } = req.params;
-      await prisma.post.findFirstOrThrow({
+      await prisma.post.findUniqueOrThrow({
         where: { id: Number(id) },
       });
 
@@ -95,8 +92,7 @@ class PostController {
 
       res.status(200).send(deletedPost);
     } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: 'Internal Server Error' });
+      next(error);
     }
   }
 }

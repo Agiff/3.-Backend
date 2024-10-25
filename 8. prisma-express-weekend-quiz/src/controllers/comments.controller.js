@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class CommentController {
-  addComment = async (req, res) => {
+  addComment = async (req, res, next) => {
     try {
       const { content, user_id, post_id } = req.body;
 
@@ -23,7 +23,7 @@ class CommentController {
     }
   }
 
-  getComments = async (req, res) => {
+  getComments = async (req, res, next) => {
     try {
       const comments = await prisma.comment.findMany();
       res.status(200).send(comments);
