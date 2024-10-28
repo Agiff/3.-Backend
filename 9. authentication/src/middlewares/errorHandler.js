@@ -16,6 +16,12 @@ export const errorHandler = (err, req, res, next) => {
       message = err.message;
       break;
 
+    case 'InvalidToken':
+    case 'JsonWebTokenError':
+      status = 403;
+      message = err.message;
+      break;
+
     case 'JavascriptDeveloperClassError':
       status = 401;
       message = err.message
