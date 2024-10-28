@@ -16,6 +16,7 @@ export const errorHandler = (err, req, res, next) => {
       message = err.message;
       break;
 
+    case 'UnauthorizedError':
     case 'InvalidToken':
     case 'JsonWebTokenError':
       status = 403;

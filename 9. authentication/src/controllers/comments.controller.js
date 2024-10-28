@@ -32,6 +32,23 @@ class CommentController {
       res.status(500).send({ message: 'Internal Server Error' });
     }
   }
+
+  deleteComment = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await prisma.comment.findUniqueOrThrow({
+        where: { id: Number(id) },
+      });
+
+      const deletedComment = await prisma.comment.delete({
+        where: { id: Number(id) }
+      })
+
+      res.status(200).send(deletedComment);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const commentController = new CommentController();

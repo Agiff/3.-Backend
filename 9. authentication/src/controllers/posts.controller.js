@@ -53,7 +53,7 @@ class PostController {
   updatePost = async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { title, content, user_id } = req.body;
+      const { title, content } = req.body;
 
       const postFound = await prisma.post.findUnique({
         where: { id: Number(id) },
@@ -69,7 +69,7 @@ class PostController {
         data: {
           title,
           content,
-          user_id: Number(user_id)
+          user_id: req.user.id
         }
       });
 
