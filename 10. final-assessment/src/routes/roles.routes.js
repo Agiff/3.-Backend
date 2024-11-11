@@ -6,6 +6,6 @@ roleRouter.post('/', roleController.addRole);
 roleRouter.get('/', roleController.getRoles);
 roleRouter.get('/:id', roleController.findRole);
 roleRouter.put('/:id', roleController.updateRole);
-roleRouter.delete('/:id', roleController.deleteRole)
+roleRouter.delete('/:id', roleController.deleteRole);
 
 export default roleRouter;
