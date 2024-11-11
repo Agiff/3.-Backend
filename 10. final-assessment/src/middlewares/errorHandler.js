@@ -6,8 +6,14 @@ export const errorHandler = (err, req, res, next) => {
 
   switch (err.name) {
     case 'PrismaClientValidationError':
+    case 'PrismaClientKnownRequestError':
       status = 400;
       message = errorMessageFormatter(err.message);
+      break;
+
+    case 'NotFoundError':
+      status = 404;
+      message = err.message;
       break;
   
     default:
