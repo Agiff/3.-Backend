@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import jsonwebtoken from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -28,6 +29,33 @@ class UserController {
       })
 
       res.status(201).send(newUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  login = async (req, res, next) => {
+    try {
+      if (!req.body.email) throw { name: 'ValidationError', message: 'Email is required' };
+      if (!req.body.password) throw { name: 'ValidationError', message: 'Password is required' };
+
+      const user = await prisma.user.findUnique({
+        where: {
+          email: req.body.email
+        }
+      });
+
+      if (!user) throw { name: 'Unauthenticated', message: 'Login credentials is not valid' };
+
+      const passwordIsValid = await bcrypt.compare(req.body.password, user.password);
+
+      if (!passwordIsValid) throw { name: 'Unauthenticated', message: 'Login credentials is not valid' };
+
+      const payload = { id: user.id };
+
+      const access_token = jsonwebtoken.sign(payload, process.env.JWT_SECRET);
+
+      res.status(200).send({ access_token });
     } catch (error) {
       next(error);
     }
