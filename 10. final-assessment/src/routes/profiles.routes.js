@@ -4,7 +4,7 @@ import { authentication } from '../middlewares/authentication.js';
 import { userAuthorization } from '../middlewares/authorizations.js';
 const profileRouter = express.Router();
 
-profileRouter.post('/', profileController.addProfile);
+profileRouter.post('/', authentication, profileController.addProfile);
 profileRouter.get('/', profileController.getProfiles);
 profileRouter.get('/:id', profileController.findProfile);
 profileRouter.put('/:id', authentication, userAuthorization, profileController.updateProfile);

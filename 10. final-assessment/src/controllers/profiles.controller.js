@@ -8,7 +8,7 @@ class ProfileController {
       const newProfile = await prisma.profile.create({
         data: {
           ...req.body,
-          user_id: Number(req.body.user_id)
+          user_id: req.user.id
         }
       })
 
