@@ -3,7 +3,7 @@ import { userController } from '../controllers/users.controller.js';
 const userRouter = express.Router();
 
 userRouter.get('/', userController.getUsers);
-userRouter.post('/register', userController.addUser);
+userRouter.post('/register', userController.register);
 userRouter.get('/:id', userController.findUser);
 userRouter.put('/:id', userController.updateUser);
 userRouter.delete('/:id', userController.deleteUser);

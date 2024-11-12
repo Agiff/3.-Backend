@@ -11,6 +11,11 @@ export const errorHandler = (err, req, res, next) => {
       message = errorMessageFormatter(err.message);
       break;
 
+    case 'ValidationError':
+      status = 400;
+      message = err.message;
+      break;
+
     case 'NotFoundError':
       status = 404;
       message = err.message;

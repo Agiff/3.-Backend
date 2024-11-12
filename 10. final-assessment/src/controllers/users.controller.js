@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 class UserController {
-  addUser = async (req, res, next) => {
+  register = async (req, res, next) => {
     try {
       if (!req.body.role_id) {
         const userRole = await prisma.role.findUniqueOrThrow({
@@ -15,8 +16,15 @@ class UserController {
         req.body.role_id = userRole.id;
       }
 
+      if (!req.body.password) throw { name: 'ValidationError', message: 'Password is required' };
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
       const newUser = await prisma.user.create({
-        data: req.body
+        data: {
+          ...req.body,
+          password: hashedPassword
+        }
       })
 
       res.status(201).send(newUser);
