@@ -14,13 +14,17 @@ export const authentication = async (req, res, next) => {
     const user = await prisma.user.findUnique({
       where: {
         id: payload.id
+      },
+      include: {
+        role: true
       }
     })
 
     if (!user) throw { name: 'Unauthenticated', message: 'User is no longer exists' };
     
     req.user = {
-      id: user.id
+      id: user.id,
+      role: user.role.name
     }
     
     next();

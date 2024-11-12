@@ -35,6 +35,8 @@ export const userAuthorization = async (req, res, next) => {
         break;
     }
 
+    if (req.user.role === 'admin') hasAccess = true;
+
     if (!hasAccess) throw { name: 'Unauthorized', message: 'You are not authorized' }
 
     next();
