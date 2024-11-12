@@ -92,8 +92,17 @@ class UserController {
         }
       })
 
+      let hashedPassword;
+
+      if (req.body.password) {
+        hashedPassword = await bcrypt.hash(req.body.password, 10);
+      }
+
       const updatedUser = await prisma.user.update({
-        data: req.body,
+        data: {
+          ...req.body,
+          password: hashedPassword ? hashedPassword : undefined
+        },
         where: {
           id: Number(req.params.id)
         }
