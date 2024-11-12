@@ -22,6 +22,11 @@ export const errorHandler = (err, req, res, next) => {
       message = err.message;
       break;
 
+    case 'Unauthorized':
+      status = 403;
+      message = err.message;
+      break;
+
     case 'NotFoundError':
       status = 404;
       message = err.message;
