@@ -42,3 +42,24 @@ export const userAuthorization = async (req, res, next) => {
     next(error);
   }
 }
+
+export const adminAuthorization = (role) => {
+  return async (req, res, next) => {
+    try {
+      const user = await prisma.user.findUniqueOrThrow({
+        where: {
+          id: req.user.id
+        },
+        include: {
+          role: true
+        }
+      })
+
+      if (user.role.name !== role) throw { name: 'Unauthorized', message: 'You are not authorized' }
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+}
